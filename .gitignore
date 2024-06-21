@@ -1,0 +1,9 @@
+node_modules
+.env
+logs
+.git
+src/lib/index.html
+dist
+.drizzle
+cert
+terraform

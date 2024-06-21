@@ -1,0 +1,8 @@
+node_modules
+logs
+dist
+.env
+.github
+.husky
+dist
+github-assets
