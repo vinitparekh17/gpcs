@@ -1,4 +1,5 @@
 import express from 'express';
+import promClient from './lib/prometheus';
 import type { Application, Request, Response } from 'express';
 
 export const app: Application = express();
@@ -14,6 +15,12 @@ import './middlewares';
         app.useDatabase();
 
         app.usePassport();
+
+        app.get('/metrics', async (req: Request, res: Response) => {
+            res.setHeader('Content-Type', promClient.register.contentType);
+            const metrics = await promClient.register.metrics()
+            res.send(metrics);
+        })
 
         app.use('/api/v1', router);
 

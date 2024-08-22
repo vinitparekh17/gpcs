@@ -1,0 +1,115 @@
+services:    
+    backend-server:
+      container_name: backend-server
+      build:
+        context: ..
+        dockerfile: docker/Dockerfile
+      links:
+       - cassandra
+       - valkey
+      ports:
+      - 8080:8080
+      env_file:
+        - ../.env
+      depends_on:
+        postgres:
+          condition: service_healthy
+        cassandra:
+          condition: service_healthy 
+        valkey:
+          condition: service_started
+        loki:
+          condition: service_started
+      networks:
+        - omnisive-network
+
+    postgres:
+        container_name: postgres
+        image: postgres:15-alpine
+        expose:
+         - 5432
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: omnisive
+        healthcheck:
+            test: [ "CMD", "pg_isready" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5      
+        volumes:
+          - postgres-data:/var/lib/postgresql/data
+        networks:
+          - omnisive-network
+
+    cassandra:
+        container_name: cassandra
+        image: cassandra:latest
+        restart: always
+        networks:
+          - omnisive-network
+        ports:
+          - 9042:9042
+        environment:
+          - CASSANDRA_SEEDS=cassandra
+        healthcheck:
+          test: ["CMD-SHELL", "cqlsh cassandra -e 'describe keyspaces'"]
+          interval: 30s
+          timeout: 10s
+          retries: 5       
+          
+    valkey:
+        container_name: valkey
+        image: bitnami/valkey:latest
+        environment:
+          - ALLOW_EMPTY_PASSWORD=yes
+        ports:
+          - '6379:6379'
+        networks:
+          - omnisive-network
+
+    prometheus:
+      image: prom/prometheus
+      container_name: prometheus
+      command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+      ports:
+      - 9090:9090
+      restart: unless-stopped
+      networks:
+        - omnisive-network
+      volumes:
+        - ./prometheus:/etc/prometheus
+        - prom-data:/prometheus
+    
+    grafana:
+      image: grafana/grafana
+      container_name: grafana
+      ports:
+        - 3000:3000
+      restart: unless-stopped
+      environment:
+        - GF_SECURITY_ADMIN_USER=admin
+        - GF_SECURITY_ADMIN_PASSWORD=grafana
+      networks:
+        - omnisive-network
+      volumes:
+        - ./grafana:/etc/grafana/provisioning/datasources
+
+    loki:
+      image: grafana/loki:2.9.10
+      container_name: loki
+      ports:
+        - "3100:3100"
+      command: -config.file=/etc/loki/local-config.yaml
+      networks:
+        - omnisive-network
+
+networks:
+   omnisive-network:
+     driver: bridge
+
+volumes:
+    postgres-data:
+    cassandra-data:
+    prom-data:

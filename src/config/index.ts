@@ -1,6 +1,6 @@
 export const {
     PORT,
-    MONGO_URI,
+    NODE_ENV,
 
     AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,

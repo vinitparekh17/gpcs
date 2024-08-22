@@ -1,13 +1,12 @@
 import type { RedisClientOptions } from 'redis';
 import { createClient } from 'redis';
-import { AWS_REDIS_PASSWORD, AWS_REDIS_URL } from '../../config';
+import { AWS_REDIS_PASSWORD, AWS_REDIS_URL, NODE_ENV } from '../../config';
 
-const option: RedisClientOptions = {
+const option: RedisClientOptions = NODE_ENV !== 'development' ? {
     url: AWS_REDIS_URL,
-    password: AWS_REDIS_PASSWORD,
-    socket: {
-        keepAlive: -1,
-    },
+    password: AWS_REDIS_PASSWORD
+} : {
+    url: 'redis://valkey:6379'
 };
 
 const redis = createClient(option);

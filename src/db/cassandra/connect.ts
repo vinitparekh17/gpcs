@@ -4,6 +4,7 @@ import {
     AWS_ACCESS_KEY_ID,
     AWS_REGION,
     AWS_SECRET_ACCESS_KEY,
+    NODE_ENV,
 } from '../../config';
 import { readFileSync } from 'fs';
 import { SignatureV4, createScope } from '@smithy/signature-v4';
@@ -37,22 +38,22 @@ class SigV4Authenticator implements auth.Authenticator {
 
     private static handleError =
         (callback: (error: Error | null, buffer: Buffer | null) => void) =>
-        (err: unknown): void => {
-            callback(
-                err instanceof Error ? err : new Error(JSON.stringify(err)),
-                null
-            );
-        };
+            (err: unknown): void => {
+                callback(
+                    err instanceof Error ? err : new Error(JSON.stringify(err)),
+                    null
+                );
+            };
 
     private handleSignature =
         (
             timestamp: string,
             callback: (error: Error | null, buffer: Buffer | null) => void
         ) =>
-        (signature: string): void => {
-            const payload = `signature=${signature},access_key=${this.accessKeyId},amzdate=${timestamp}`;
-            callback(null, Buffer.from(payload, 'utf-8'));
-        };
+            (signature: string): void => {
+                const payload = `signature=${signature},access_key=${this.accessKeyId},amzdate=${timestamp}`;
+                callback(null, Buffer.from(payload, 'utf-8'));
+            };
 
     evaluateChallenge = (
         challenge: Buffer,
@@ -119,7 +120,7 @@ class SigV4Authenticator implements auth.Authenticator {
 
     /* Calling class expects to be a method, so cannot make static even though it is a static function */
     /* eslint-disable-next-line class-methods-use-this */
-    onAuthenticationSuccess = (): void => {};
+    onAuthenticationSuccess = (): void => { };
 }
 
 class SigV4AuthProvider implements auth.AuthProvider {
@@ -156,7 +157,7 @@ const sslOptions: ConnectionOptions = {
                 '..',
                 '..',
                 '..',
-                'certs',
+                'cert',
                 'sf-class2-root.crt'
             ), // Path at root of project
             'utf-8'
@@ -166,7 +167,7 @@ const sslOptions: ConnectionOptions = {
     rejectUnauthorized: true,
 };
 
-export const cassandraClient = new Client({
+export const cassandraClient = NODE_ENV !== 'development' ? new Client({
     contactPoints: [`cassandra.${AWS_REGION}.amazonaws.com`],
     localDataCenter: AWS_REGION,
     authProvider: new SigV4AuthProvider({
@@ -175,4 +176,8 @@ export const cassandraClient = new Client({
     }),
     sslOptions: sslOptions,
     protocolOptions: { port: 9142 },
+}) : new Client({
+    contactPoints: ['cassandra'],
+    localDataCenter: 'datacenter1',
+    protocolOptions: { port: 9042 }
 });

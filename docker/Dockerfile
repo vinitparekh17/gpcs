@@ -1,11 +1,13 @@
 # Stage 1: Build
-FROM node:20-alpine as builder
+FROM node:20-alpine AS builder
 
 # Set the working directory
 WORKDIR /usr/src/app
 
 # Copy package.json and yarn.lock to install dependencies
 COPY package.json yarn.lock ./
+
+RUN yarn cache clean
 
 # Install dependencies
 RUN yarn install --frozen-lockfile
@@ -19,7 +21,7 @@ RUN yarn build
 # Stage 2: Production
 FROM node:20.13-bullseye-slim
 
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 
 # Use a non-root user for security
 USER node
@@ -35,6 +37,7 @@ RUN yarn install --production --frozen-lockfile
 
 # Copy the built application from the builder stage
 COPY --from=builder --chown=node:node /usr/src/app/dist ./dist
+COPY --from=builder --chown=node:node /usr/src/app/cert ./dist/cert
 
 EXPOSE 8080
 

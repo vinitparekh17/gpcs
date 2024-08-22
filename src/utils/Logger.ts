@@ -1,4 +1,5 @@
 import winston from 'winston';
+const LokiTransport = require('winston-loki');
 
 const levels = {
     error: 0,
@@ -34,11 +35,9 @@ const format = winston.format.combine(
 
 const transports = [
     new winston.transports.Console(),
-    new winston.transports.File({
-        filename: 'logs/error.log',
-        level: 'error',
+    new LokiTransport({
+        host: process.env.NODE_ENV === 'development' ? 'http://loki:3100' : '',
     }),
-    new winston.transports.File({ filename: 'logs/all.log' }),
 ];
 
 export const Logger = winston.createLogger({

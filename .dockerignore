@@ -4,5 +4,4 @@ dist
 .env
 .github
 .husky
-dist
 github-assets
