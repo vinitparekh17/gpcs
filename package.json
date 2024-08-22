@@ -14,7 +14,7 @@
         "db:cassandra": "node -r ts-node/register --env-file=.env ./src/db/cassandra/migration.ts",
         "lint": "eslint . --ext .ts",
         "test": "npx jest",
-        "format": "prettier --write ./src/**/*.{ts,js}",
+        "format": "prettier --write ./src/**/*.{ts,js,json}",
         "prepare": "husky"
     },
     "keywords": [
