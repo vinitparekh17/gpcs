@@ -77,6 +77,10 @@ yarn install
 
 3. Create a `.env` file in the root directory as per the `.env.example` file
 
+```bash
+cp .env.example .env
+```
+
 4. Start the server
 
 ```bash
@@ -84,6 +88,68 @@ yarn server-dev # For development
 
 yarn build && yarn start # For production
 ```
+
+# Run with Docker
+
+1. Build the Docker image
+
+```bash
+docker build -t gpcs -f ./docker .
+```
+
+2. Run the Docker container
+
+```bash
+docker run -p 8080:8080 gpcs -d --name gpcs
+```
+
+# Logging and Monitoring
+
+## Overview
+
+This project implements a robust logging and monitoring solution using three key tools:
+- **Grafana**: Visualization platform for metrics and logs
+- **Prometheus**: Metrics collection and monitoring system
+- **Loki**: Log aggregation system for containerized environments
+
+## Components
+
+### Grafana
+- Web-based analytics and interactive visualization platform
+- Supports multiple data sources
+- Provides customizable dashboards for real-time monitoring
+
+### Prometheus
+- Open-source systems monitoring and alerting toolkit
+- Collects and stores metrics as time-series data
+- Supports powerful query language (PromQL)
+
+### Loki
+- Lightweight log aggregation system
+- Designed for cloud-native environments
+- Optimized for storing and querying container logs
+
+## Setup Requirements
+
+- Docker
+- Docker Compose
+- Minimum system resources:
+  - 4 GB RAM
+  - 2 CPU cores
+
+## Configuration
+
+1. Install Docker
+2. Configure Prometheus targets
+3. Set up Loki log collection
+4. Configure Grafana data sources
+5. Create monitoring dashboards
+
+## Useful Links
+
+- [Grafana Official Site](https://grafana.com/)
+- [Prometheus Documentation](https://prometheus.io/docs/)
+- [Loki GitHub Repository](https://github.com/grafana/loki)
 
 > [!IMPORTANT]
 > Make sure to have MongoDB running on your local machine or provide the connection string in the `.env` file <br/> <br/>

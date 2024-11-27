@@ -37,7 +37,20 @@ RUN yarn install --production --frozen-lockfile
 
 # Copy the built application from the builder stage
 COPY --from=builder --chown=node:node /usr/src/app/dist ./dist
-COPY --from=builder --chown=node:node /usr/src/app/cert ./dist/cert
+
+# Switch to root to perform installations
+USER root
+
+# Install CA certificates, curl, download the certificate, and clean up
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    curl https://certs.secureserver.net/repository/sf-class2-root.crt -o ./dist/cert && \
+    apt-get remove -y curl && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+# Switch back to non-root user
+USER node
 
 EXPOSE 8080
 
