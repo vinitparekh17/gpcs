@@ -107,10 +107,9 @@ docker run -p 8080:8080 gpcs -d --name gpcs
 
 ## Overview
 
-This project implements a robust logging and monitoring solution using three key tools:
-- **Grafana**: Visualization platform for metrics and logs
-- **Prometheus**: Metrics collection and monitoring system
-- **Loki**: Log aggregation system for containerized environments
+<div align="center" style="margin-bottom: 20px">
+<img src="./github-assets/log-arch-light.png" alt="log-management-diagram" width="500px" />
+</div>
 
 ## Components
 
