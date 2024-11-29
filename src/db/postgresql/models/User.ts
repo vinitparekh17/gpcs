@@ -8,7 +8,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { deleteObjectIfExist } from '../../../lib/aws/s3';
 import url from 'node:url';
-import type { IUser, User as UserType } from '../../../interface/';
+import type { IUser, User as UserType } from '../../../types';
 import { JWT_EXPIRY, JWT_SECRET } from '../../../config';
 
 export class User implements IUser {

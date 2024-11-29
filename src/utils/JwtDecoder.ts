@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Logger } from './';
 import { JWT_SECRET } from '../config';
-import { CustomPayload } from '../interface';
+import { CustomPayload } from '../types';
 
 export class JwtHelper {
     static verifyToken(token: string): jwt.JwtPayload | string {

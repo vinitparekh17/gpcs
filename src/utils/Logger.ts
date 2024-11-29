@@ -1,5 +1,5 @@
 import winston from 'winston';
-const LokiTransport = require('winston-loki');
+import LokiTransport from 'winston-loki';
 
 const levels = {
     error: 0,

@@ -7,7 +7,7 @@ import { speechClient } from '../gcp/speech';
 import { AiResponder } from '../../utils/AiResponder';
 import { pollyClient, pollyCommand } from '../aws/polly';
 import redis from '../../db/redis';
-import { SocketEvents, RequestAudio } from '../../interface';
+import { SocketEvents, RequestAudio } from '../../types';
 
 export class SocketServer {
     static io: SocketIOServer;

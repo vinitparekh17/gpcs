@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import type { Request, Response } from 'express';
 import { AsyncHandler } from '../handlers';
-import type { EmailFormat, User as UserType } from '../interface';
+import type { User as UserType, EmailFormat } from '../types';
 import EmailService from '../lib/aws/ses';
 import { Cookie, Err, Success } from '../utils';
 import { PasswordResetTemplate, SignUpTemplate } from '../utils/Template';

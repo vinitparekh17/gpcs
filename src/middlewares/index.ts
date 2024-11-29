@@ -48,9 +48,11 @@ app.useMiddleware = function () {
         }
         app.use(ErrorHandler());
     } catch (error: unknown) {
-        error instanceof Error
-            ? Logger.error('Middlewares ' + error.message, error.stack)
-            : Logger.error(error);
+        if (error instanceof Error) {
+            Logger.error('Middlewares ' + error.message, error.stack);
+        } else {
+            Logger.error(error);
+        }
     }
 };
 

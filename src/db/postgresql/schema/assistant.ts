@@ -30,7 +30,7 @@ export const AssistantTable = userSchema.table(
             .references(() => accountTable.id),
         createdAt: timestamp('created_at').notNull().defaultNow(),
     },
-    (assistant: any) => ({
+    (assistant) => ({
         userIdIdx: index('ast_user_id').on(assistant.userId),
     })
 );

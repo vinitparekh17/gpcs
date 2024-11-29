@@ -1,2 +1,19 @@
-#yarn format
-#yarn test
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Run your pre-commit tasks here
+echo "Running pre-commit hook"
+
+# Run linting
+yarn run lint
+if [ $? -ne 0 ]; then
+    echo "Linting failed"
+    exit 1
+fi
+
+# Run tests
+yarn test
+if [ $? -ne 0 ]; then
+    echo "Tests failed"
+    exit 1
+fi

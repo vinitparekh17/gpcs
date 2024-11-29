@@ -1,11 +1,11 @@
 import passport from 'passport';
 import JwtStrategy from 'passport-jwt';
-import { JWT_EXPIRY, JWT_SECRET } from '../../config';
+import { JWT_SECRET } from '../../config';
 import { JwtPayload } from 'jsonwebtoken';
 import { Logger } from '../../utils';
 import { app } from '../../app';
 import { User } from '../../db/postgresql/models/User';
-import type { User as UserType } from '../../interface';
+import type { User as UserType } from '../../types';
 import redis from '../../db/redis';
 
 app.usePassport = function (): void {

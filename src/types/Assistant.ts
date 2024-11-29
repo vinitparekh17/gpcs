@@ -1,4 +1,4 @@
-type AssistantType = {
+export type AssistantType = {
     id?: string | undefined;
     name: string;
     preConfig: string;
@@ -8,7 +8,7 @@ type AssistantType = {
     createdAt?: Date;
 };
 
-interface IAssistant {
+export interface IAssistant {
     name: string;
     preConfig: string;
     avatar: string | null;
@@ -16,7 +16,7 @@ interface IAssistant {
     insert(userId: string): Promise<AssistantType>;
 }
 
-type AssistantInput = {
+export type AssistantInput = {
     name: string;
     preConfig: string;
     avatar: string | null;
