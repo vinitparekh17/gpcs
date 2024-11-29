@@ -15,22 +15,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
         with:
-          fetch-depth: 0
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-
+          node-version: 22.11.0
       - name: Install dependencies
         run: yarn install
-
-      - name: Run tests
+      - name: Run tests and collect coverage
         run: npx jest --coverage
-
-      - name: Upload results to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   build:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
