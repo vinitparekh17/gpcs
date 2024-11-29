@@ -1,12 +1,11 @@
 # GPCS Backend
 
-![Docker Image CI](https://github.com/vinitparekh17/gpcs/actions/workflows/docker-image-ci.yaml/badge.svg)
+![Docker Image CI](https://github.com/vinitparekh17/gpcs/actions/workflows/ci.yaml/badge.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/vinitparekh17/gpcs)
 ![GitHub contributors](https://img.shields.io/github/contributors/vinitparekh17/gpcs)
 ![GitHub stars](https://img.shields.io/github/stars/vinitparekh17/gpcs)
 ![GitHub forks](https://img.shields.io/github/forks/vinitparekh17/gpcs)
 ![GitHub issues](https://img.shields.io/github/issues/vinitparekh17/gpcs)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/vinitparekh17/gpcs)
 
 <div align="center">
 <img src="./github-assets/Gemini_Generated_Image_vll6nsvll6nsvll6.jpeg" alt="gpcs-logo" width="500px" height="500px" />
