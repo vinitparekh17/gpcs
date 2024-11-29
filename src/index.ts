@@ -15,6 +15,7 @@ export const socketServer: SocketServer = new SocketServer(server);
 export const { io } = SocketServer;
 SocketMiddleware();
 
+// Graceful shutdown of the server and redis
 process.on('SIGINT', () => {
     redis
         .flushAll()
