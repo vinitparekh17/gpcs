@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import { AssistantTable } from '../schema/assistant';
 import { Logger } from '../../../utils';
 import { db } from '../connect';
+import { IAssistant, AssistantType } from '../../../types';
 
 export class Assistant implements IAssistant {
     id?: string | undefined;

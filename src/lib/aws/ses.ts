@@ -1,13 +1,13 @@
 import * as aws from '@aws-sdk/client-ses';
 import { createTransport } from 'nodemailer';
 import { Logger } from '../../utils';
-import { EmailFormat } from '../../interface';
 import {
     AWS_REGION,
     AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,
     FROM_EMAIL,
 } from '../../config';
+import { EmailFormat } from '../../types';
 
 const ses = new aws.SES({
     region: AWS_REGION,

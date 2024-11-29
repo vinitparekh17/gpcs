@@ -1,5 +1,5 @@
 import { Response, Request } from 'express';
-import { IUser } from '../interface';
+import { IUser } from '../types';
 
 export class Success {
     static send(

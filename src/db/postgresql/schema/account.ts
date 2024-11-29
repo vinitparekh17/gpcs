@@ -30,7 +30,7 @@ export const accountTable = userSchema.table(
         forgotpassexpire: bigint('forgotPassExpire', { mode: 'number' }),
         createdAt: timestamp('createdAt').notNull().defaultNow(),
     },
-    (account: any) => ({
+    (account) => ({
         emailIdx: index('usr_email').on(account.email),
     })
 );

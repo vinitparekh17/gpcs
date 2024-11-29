@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { stripeClient } from '../lib/payment/Stripe';
 import { AsyncHandler } from '../handlers';
 import { RazorpayClient } from '../lib/payment/Razorpay';
+import type { INormalizeError } from 'razorpay/dist/types/api';
 import { Err, Logger, Success } from '../utils';
 import EmailService from '../lib/aws/ses';
 import { PaymentSuccessTemplate } from '../utils/Template';
@@ -28,33 +29,48 @@ export const CreateStripePaymentIntent = AsyncHandler(
     }
 );
 
-export const StripeWebhook = AsyncHandler((req: Request) => {
+export const StripeWebhook = AsyncHandler((req: Request, res: Response): Response => {
     const event = req.body;
     if (event.type == 'payment_intent.succeeded') {
         const paymentIntent = event.data.object;
         console.log(paymentIntent);
     }
+
+    return Success.send(res, 200, 'Webhook received');
 });
 
-export const RazorPay = AsyncHandler((req: Request, res: Response) => {
+export const RazorPay = AsyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { amount } = req.body;
-
-    RazorpayClient.orders.create(
-        {
+    try {
+        const order = await RazorpayClient.orders.create({
             amount: parseInt(amount) * 100,
             currency: 'INR',
             method: 'upi',
             receipt: `order_rcptid_${Math.floor(Math.random() * 1000)}`,
-        },
-        (err, order) => {
-            if (err) {
-                Logger.error(err.error.reason);
-                return Err.send(res, 500, err.error.reason);
-            }
-            return Success.send(res, 201, order);
+        });
+        return Success.send(res, 201, order);
+    } catch (err: unknown) {
+        if (isNormalizeError(err)) {
+            const reason = err.error.reason;
+            Logger.error(reason);
+            return Err.send(res, 500, reason);
         }
-    );
+    
+        const message = err instanceof Error ? err.message : 'Unknown error occurred';
+        Logger.error(message);
+        return Err.send(res, 500, message);
+    }
+    
 });
+
+function isNormalizeError(err: unknown): err is INormalizeError {
+    return (
+        typeof err === 'object' &&
+        err !== null &&
+        'error' in err &&
+        typeof (err as INormalizeError).error?.reason === 'string'
+    );
+}
 
 export const SendEmailOnPaymentCapture = AsyncHandler(
     (req: Request, res: Response) => {

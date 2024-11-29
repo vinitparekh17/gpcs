@@ -1,5 +1,5 @@
 import { cassandraClient } from '../connect';
-import type { Message as MessageType } from '../../../interface/Message';
+import type { Message as MessageType } from '../../../types/Message';
 import { types } from 'cassandra-driver';
 
 export class Message {

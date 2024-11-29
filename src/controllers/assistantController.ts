@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import { Err, Logger, Success } from '../utils';
 import { AsyncHandler } from '../handlers';
 import { Assistant } from '../db/postgresql/models/Assistant';
+import { AssistantInput } from '../types';
 
 export const getAssistant = AsyncHandler(
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response): Promise<Response> => {
         if (!req.user || !req.user.id) {
             throw new Error('User not found');
         }
@@ -18,7 +19,7 @@ export const getAssistant = AsyncHandler(
 );
 
 export const createAssistant = AsyncHandler(
-    async (req: Request, res: Response) => {
+    async (req: Request, res: Response): Promise<Response>=> {
         const { name, preConfig, avatar } = req.body as AssistantInput;
         if (!name || !preConfig) {
             return Err.send(res, 400, 'Name and preConfig are required');
@@ -43,7 +44,7 @@ export const createAssistant = AsyncHandler(
     }
 );
 
-export const publishAssistant = AsyncHandler((req: Request, res: Response) => {
+export const publishAssistant = AsyncHandler((req: Request, res: Response): Promise<Response> | Response => {
     const { assistantId } = req.params;
 
     if (assistantId) {
@@ -67,14 +68,14 @@ export const publishAssistant = AsyncHandler((req: Request, res: Response) => {
     return Err.send(res, 400, 'Assistant id not found');
 });
 
-export const updateAssistant = AsyncHandler((req: Request, res: Response) => {
+export const updateAssistant = AsyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { name, preConfig, avatar } = req.body as AssistantInput;
 
     if (!name || !preConfig) {
         return Err.send(res, 400, 'Name and preConfig are required');
     }
 
-    return Assistant.update(
+    const updatedAssistant = await Assistant.update(
         {
             id: req.params.id,
             userId: req.user.id!,
@@ -83,10 +84,7 @@ export const updateAssistant = AsyncHandler((req: Request, res: Response) => {
             avatar,
         },
         req.params.id
-    )
-        .then((assistant) => Success.send(res, 200, assistant))
-        .catch((err: Err) => {
-            Logger.error(err);
-            return Err.send(res, 400, 'Something went wrong');
-        });
+    );
+
+    return Success.send(res, 200, updatedAssistant);
 });

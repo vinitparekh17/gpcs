@@ -29,7 +29,7 @@ class SigV4Authenticator implements auth.Authenticator {
     }
 
     /* Calling class expects to be a method, so cannot make static even though it is a static function */
-    /* eslint-disable-next-line class-methods-use-this */
+     
     initialResponse = (
         callback: (error: Error | null, buffer: Buffer | null) => void
     ): void => {
@@ -72,8 +72,7 @@ class SigV4Authenticator implements auth.Authenticator {
         const nonce = res[1].split(',')[0];
 
         const timestamp = new Date().toISOString();
-        /* eslint-disable-next-line no-useless-escape */
-
+        /*eslint no-useless-escape: "off"*/
         const timestampDate = timestamp
             .replace(/[:\-]|\.\d{3}/g, '')
             .slice(0, 8);
@@ -119,7 +118,7 @@ class SigV4Authenticator implements auth.Authenticator {
     };
 
     /* Calling class expects to be a method, so cannot make static even though it is a static function */
-    /* eslint-disable-next-line class-methods-use-this */
+     
     onAuthenticationSuccess = (): void => { };
 }
 

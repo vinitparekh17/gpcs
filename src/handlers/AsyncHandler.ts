@@ -9,7 +9,7 @@ import { Logger } from '../utils';
  * @param fn: Function
  */
 
-export default (fn: Function) =>
+export default (fn: (req: Request, res: Response, next: NextFunction) => Promise<Response> | Response): (req: Request, res: Response, next: NextFunction) => void =>
     (req: Request, res: Response, next: NextFunction) => {
         Promise.resolve(fn(req, res, next)).catch((err: Error) => {
             Logger.error(err.message);

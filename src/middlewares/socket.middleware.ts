@@ -1,6 +1,6 @@
 import { io } from '../';
 import type { Socket } from 'socket.io';
-import { CustomPayload } from '../interface';
+import { CustomPayload } from '../types';
 import { JwtHelper, Logger } from '../utils/';
 import { NextFunction } from 'express';
 import redis from '../db/redis';
@@ -23,9 +23,12 @@ export function SocketMiddleware() {
                     } else {
                         const { data } = decoded as CustomPayload;
                         if (data !== undefined) {
-                            (await redis.set(data.id, socket.id))
-                                ? next()
-                                : next(new Error('Cache error'));
+                            const result = await redis.set(data.id, socket.id);
+                            if (result) {
+                                next();
+                            } else {
+                                next(new Error('Cache error'));
+                            }
                         }
                     }
                 }
