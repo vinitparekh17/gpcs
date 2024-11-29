@@ -6,7 +6,7 @@ module.exports = {
         '^.+\\.(ts|tsx)$': 'ts-jest',
     },
     testRegex: '.test.(ts|js)$',
-    coverageDirectory: './coverage',
+    collectCoverage: true,
     collectCoverageFrom: ['src/**/*.{ts,js}'],
-    coverageReporters: ['text', 'html'],
+    coverageReporters: ['text', 'cobertura'],
 };
