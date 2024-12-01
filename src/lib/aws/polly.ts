@@ -1,17 +1,7 @@
-import { PollyClient, SynthesizeSpeechCommand } from '@aws-sdk/client-polly';
-import {
-    AWS_ACCESS_KEY_ID,
-    AWS_REGION,
-    AWS_SECRET_ACCESS_KEY,
-} from '../../config';
+import { PollyClient, SynthesizeSpeechCommand } from "@aws-sdk/client-polly";
+import { awsConfig } from "./index.ts";
 
-export const pollyClient = new PollyClient({
-    region: AWS_REGION,
-    credentials: {
-        accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY,
-    },
-});
+export const pollyClient = new PollyClient(awsConfig);
 
 /**
  * This is pre configured polly command to synthesize speech
@@ -21,11 +11,11 @@ export const pollyClient = new PollyClient({
  */
 
 export const pollyCommand = (text: string) =>
-    new SynthesizeSpeechCommand({
-        Engine: 'neural',
-        LanguageCode: 'en-GB',
-        OutputFormat: 'mp3',
-        SampleRate: '8000',
-        Text: text,
-        VoiceId: 'Arthur',
-    });
+  new SynthesizeSpeechCommand({
+    Engine: "neural",
+    LanguageCode: "en-GB",
+    OutputFormat: "mp3",
+    SampleRate: "8000",
+    Text: text,
+    VoiceId: "Arthur",
+  });

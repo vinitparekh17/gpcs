@@ -1,15 +1,14 @@
-export { IUser, User, CustomPayload } from './User';
-export { EmailFormat }  from './Email';
-export { Message }  from './Message';
-export { AssistantInput, IAssistant, AssistantType }  from './Assistant';
-export { ChunkObj, RequestAudio, SocketEvents }  from './Stream';
+export type { CustomPayload, IUser, User } from "./User.ts";
+export type { EmailFormat } from "./Email.ts";
+export type { Message } from "./Message.ts";
+export type { AssistantInput, AssistantType, IAssistant } from "./Assistant.ts";
+export type { ChunkObj, RequestAudio } from "./Stream.ts";
 
-
-declare module 'express-serve-static-core' {
-    interface Application {
-        useMiddleware(): void;
-        useSocket(): void;
-        usePassport(): void;
-        useDatabase(): void;
-    }
+declare module "express" {
+  interface Application {
+    useMiddleware(): void;
+    useSocket(): void;
+    usePassport(): void;
+    useDatabase(): void;
+  }
 }

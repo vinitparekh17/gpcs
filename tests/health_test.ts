@@ -45,8 +45,8 @@
 //   (server as Server).close(done);
 // });
 
-describe('mock test', () => {
-    it('a demo test', () => {
-        expect(1).toBe(1);
-    });
+describe("mock test", () => {
+  it("a demo test", () => {
+    expect(1).toBe(1);
+  });
 });

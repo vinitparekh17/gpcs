@@ -1,4 +1,5 @@
-export const SignUpTemplate = (user: string) => `<!DOCTYPE html>
+export const SignUpTemplate = (user: string) =>
+  `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -44,7 +45,8 @@ export const SignUpTemplate = (user: string) => `<!DOCTYPE html>
 </body>
 </html>`;
 
-export const PasswordResetTemplate = (url: string) => `<!DOCTYPE html>
+export const PasswordResetTemplate = (url: string) =>
+  `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -92,9 +94,10 @@ export const PasswordResetTemplate = (url: string) => `<!DOCTYPE html>
 </html>`;
 
 export const PaymentSuccessTemplate = (
-    user: string,
-    amount: number
-) => `<!DOCTYPE html>
+  user: string,
+  amount: number,
+) =>
+  `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">

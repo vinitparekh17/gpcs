@@ -41,6 +41,9 @@ COPY --from=builder --chown=node:node /usr/src/app/dist ./dist
 # Switch to root to perform installations
 USER root
 
+# Set the environment to production
+ENV NODE_ENV=production
+
 # Install CA certificates, curl, download the certificate, and clean up
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \

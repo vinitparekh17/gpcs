@@ -1,31 +1,32 @@
+import process from "node:process";
 export const {
-    PORT,
-    NODE_ENV,
+  PORT,
+  NODE_ENV,
 
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    AWS_REGION,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  AWS_REGION,
 
-    AWS_BUCKET_NAME,
+  AWS_BUCKET_NAME,
 
-    AWS_RDS_DATABASE_URL,
+  AWS_RDS_DATABASE_URL,
 
-    AWS_REDIS_URL,
-    AWS_REDIS_PASSWORD,
+  AWS_REDIS_URL,
+  AWS_REDIS_PASSWORD,
 
-    FROM_EMAIL,
+  FROM_EMAIL,
 
-    JWT_SECRET,
-    JWT_EXPIRY,
+  JWT_SECRET,
+  JWT_EXPIRY,
 
-    RAZORPAY_ID,
-    RAZORPAY_SECRET,
+  RAZORPAY_ID,
+  RAZORPAY_SECRET,
 
-    GOOGLE_PROJECT_ID,
+  GOOGLE_PROJECT_ID,
 
-    STRIPE_ACCOUNT_ID,
-    STRIPE_SECRET,
+  STRIPE_ACCOUNT_ID,
+  STRIPE_SECRET,
 } = process.env;
 
 export const DefaultAssistanConfig =
-    'You are a chatbot named Omnisive with a sarcastic personality. respond to the user with a sarcastic tone and make sure to keep the conversation light-hearted. your maximum response length is 512 tokens.';
+  "You are a chatbot named Omnisive with a sarcastic personality. respond to the user with a sarcastic tone and make sure to keep the conversation light-hearted. your maximum response length is 512 tokens.";

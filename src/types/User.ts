@@ -1,38 +1,38 @@
-import type { JwtPayload } from 'jsonwebtoken';
+import type { JwtPayload } from "jsonwebtoken";
 
-type UserRole = 'USER' | 'ADMIN';
+type UserRole = "USER" | "ADMIN";
 
 export type User = {
-    id?: string;
-    firstName: string;
-    lastName: string;
-    profile?: string;
-    email: string;
-    password?: string;
-    role?: UserRole;
-    forgotpasstoken?: string;
-    forgotpassexpire?: number;
-    createdAt?: Date;
+  id?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role: "USER" | "ADMIN" | null;
+  profile: string | null;
+  forgotpasstoken: string | null;
+  forgotpassexpire: number | null;
+  createdAt: Date;
 };
 
 export interface IUser extends User {
-    insert(): Promise<User>;
-    resetPassword(password: string): Promise<void>;
-    getForgotTokenAndSave: () => Promise<string>;
-    getJWT(): string;
+  insert(): Promise<User | Error>;
+  resetPassword(password: string): Promise<void>;
+  getForgotTokenAndSave: () => Promise<string>;
+  getJWT(): string;
 }
 
-declare module 'express' {
-    interface Request {
-        user: IUser;
-    }
-}
+// declare module "express" {
+//   interface Request {
+//     user: IUser;
+//   }
+// }
 
 export interface CustomPayload extends JwtPayload {
-    data: {
-        id: string;
-        name: string;
-        email: string;
-        profile: string;
-    };
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    profile: string;
+  };
 }

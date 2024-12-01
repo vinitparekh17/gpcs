@@ -1,6 +1,6 @@
 export type EmailFormat = {
-    to: string;
-    subject: string;
-    text?: string;
-    html?: string;
+  to: string;
+  subject: string;
+  text?: string;
+  html?: string;
 };

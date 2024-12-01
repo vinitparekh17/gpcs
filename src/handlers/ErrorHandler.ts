@@ -1,4 +1,4 @@
-import { Logger } from '../utils';
+import { Logger } from "../utils/index.ts";
 
 /**
  * @description
@@ -14,11 +14,11 @@ import { Logger } from '../utils';
  */
 
 export default class ApiError extends Error {
-    statusCode: number;
-    constructor(statusCode: number, message: string) {
-        super(message);
-        this.statusCode = statusCode;
-        Error.captureStackTrace(this, this.constructor);
-        Logger.error(this.message);
-    }
+  statusCode: number;
+  constructor(statusCode: number, message: string) {
+    super(message);
+    this.statusCode = statusCode;
+    Error.captureStackTrace(this, this.constructor);
+    Logger.error(this.message);
+  }
 }

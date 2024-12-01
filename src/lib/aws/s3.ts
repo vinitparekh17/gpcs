@@ -1,24 +1,16 @@
 import {
-    S3Client,
-    HeadObjectCommand,
-    DeleteObjectCommand,
-    HeadObjectCommandInput,
-    DeleteObjectCommandInput,
-} from '@aws-sdk/client-s3';
-import {
-    AWS_ACCESS_KEY_ID,
-    AWS_BUCKET_NAME,
-    AWS_REGION,
-    AWS_SECRET_ACCESS_KEY,
-} from '../../config';
+  DeleteObjectCommand,
+  DeleteObjectCommandInput,
+  HeadObjectCommand,
+  HeadObjectCommandInput,
+  S3Client,
+} from "@aws-sdk/client-s3";
+import { AWS_BUCKET_NAME } from "../../config/index.ts";
+import { awsConfig } from "./index.ts";
 
 export const s3Client = new S3Client({
-    region: AWS_REGION,
-    maxAttempts: 3,
-    credentials: {
-        accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY,
-    },
+  ...awsConfig,
+  maxAttempts: 3,
 });
 
 /**
@@ -28,25 +20,25 @@ export const s3Client = new S3Client({
  * @returns Promise<void>
  */
 
-export const deleteObjectIfExist = async (filename: string) => {
-    const params: HeadObjectCommandInput = {
+export const deleteObjectIfExist = (filename: string) => {
+  const params: HeadObjectCommandInput = {
+    Bucket: AWS_BUCKET_NAME,
+    Key: filename,
+  };
+
+  const cmd: HeadObjectCommand = new HeadObjectCommand(params);
+
+  s3Client.send(cmd, async (error) => {
+    if (error && error.code == "NotFound") {
+      return;
+    } else {
+      const params: DeleteObjectCommandInput = {
         Bucket: AWS_BUCKET_NAME,
         Key: filename,
-    };
+      };
 
-    const cmd: HeadObjectCommand = new HeadObjectCommand(params);
-
-    s3Client.send(cmd, async (error) => {
-        if (error && error.code == 'NotFound') {
-            return;
-        } else {
-            const params: DeleteObjectCommandInput = {
-                Bucket: AWS_BUCKET_NAME,
-                Key: filename,
-            };
-
-            const cmd = new DeleteObjectCommand(params);
-            await s3Client.send(cmd);
-        }
-    });
+      const cmd = new DeleteObjectCommand(params);
+      await s3Client.send(cmd);
+    }
+  });
 };
