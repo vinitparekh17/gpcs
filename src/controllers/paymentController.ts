@@ -11,6 +11,9 @@ import { STRIPE_ACCOUNT_ID, STRIPE_SECRET } from "../config/index.ts";
 export const CreateStripePaymentIntent = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
     const { amount } = req.body;
+    if(!req.user || !req.user.email) {
+      return Err.send(res, 401, "Unauthorized");
+    }
 
     const paymentIntent = await stripeClient.paymentIntents.create(
       {
@@ -25,7 +28,7 @@ export const CreateStripePaymentIntent = AsyncHandler(
         stripeAccount: STRIPE_ACCOUNT_ID,
       },
     );
-    return Success.send(res, 200, paymentIntent.client_secret);
+    return Success.send(res, 200, paymentIntent.client_secret as string);
   },
 );
 
@@ -54,7 +57,7 @@ export const RazorPay = AsyncHandler(
       return Success.send(res, 201, order);
     } catch (err: unknown) {
       if (isNormalizeError(err)) {
-        const reason = err.error.reason;
+        const reason = err.error.reason ?? "Unknown error occurred";
         Logger.error(reason);
         return Err.send(res, 500, reason);
       }

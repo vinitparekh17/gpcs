@@ -1,11 +1,13 @@
-import type { Request } from "express";
-import { Router } from "express";
+// @deno-types="npm:@types/express@^5.0"
+import { Request, Router, RequestHandler } from "express";
 import crypto from "node:crypto";
-import multer from "multer";
+
+// @deno-types="npm:@types/multer@^1.4"
+import multer, { FileFilterCallback } from "multer";
+
+// @deno-types="npm:@types/multer-s3@^3.0"
 import multerS3 from "multer-s3";
 import passport from "passport";
-
-const userRouter = Router();
 
 import {
   deleteAccount,
@@ -19,8 +21,49 @@ import {
 } from "../controllers/userController.ts";
 import { s3Client } from "../lib/aws/s3.ts";
 import { AWS_BUCKET_NAME } from "../config/index.ts";
+import path from "node:path";
+
 
 const bucketName = AWS_BUCKET_NAME || "default-bucket-name";
+
+const s3Storage = multerS3({
+  s3: s3Client,
+  bucket: bucketName,
+  contentType: (
+    _: Request,
+    file: Express.MulterS3.File,
+    cb: (err: Error | null, mimetype: string) => void
+  ) => {
+    cb(null, file.mimetype);
+  },
+  key: (
+    _: Request,
+    file: Express.MulterS3.File,
+    cb: (err: Error | null, key: string) => void
+  ) => {
+    cb(
+      null,
+      `profile/${crypto.randomBytes(16).toString("hex")}${path.extname(
+        file.originalname
+      )}`
+    );
+  },
+});
+
+const profileFilter = (
+  _req: Express.Request,
+  file: Express.Multer.File,
+  cb: FileFilterCallback
+): void => {
+  const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Invalid file type. Allowed types: JPEG, PNG, WEBP."));
+  }
+}
+
+const userRouter = Router();
 
 // unprotected routes
 userRouter.route("/signin").post(signIn);
@@ -33,62 +76,13 @@ userRouter.use(passport.authenticate("jwt", { session: false }));
 userRouter.route("/profile").get(profile);
 userRouter.route("/delete/:id").get(deleteAccount);
 userRouter.route("/signout").get(signOut);
-
 userRouter.route("/update/:id").post(
-  multer({
-    fileFilter: (
-      _req: Request,
-      file: Express.Multer.File,
-      cb: multer.FileFilterCallback,
-    ) => {
-      try {
-        const allowedMimeTypes = [
-          "image/jpeg",
-          "image/png",
-          "image/webp",
-        ];
-        if (allowedMimeTypes.includes(file.mimetype)) {
-          cb(null, true);
-        } else {
-          cb(new Error("Invalid file type"));
-        }
-      } catch (error) {
-        if (error instanceof Error) {
-          cb(error);
-        } else {
-          cb(new Error("Unknown error"));
-        }
-      }
-    },
-    limits: {
-      fileSize: 5 * 1024 * 1024,
-    },
-    storage: multerS3({
-      s3: s3Client,
-      bucket: bucketName,
-      contentType: (
-        _: Request,
-        file: Express.MulterS3.File,
-        cb: (err: Error | null, mimetype: string) => void,
-      ) => {
-        cb(null, file.mimetype);
-      },
-      key: (
-        _: Request,
-        file: Express.MulterS3.File,
-        cb: (err: Error | null, key: string) => void,
-      ) => {
-        cb(
-          null,
-          `profile/${
-            crypto.randomBytes(16).toString("hex") +
-            file.originalname.slice(-8)
-          }`,
-        );
-      },
-    }),
-  }).single("profile"),
-  updateAccount,
+  (multer({
+    fileFilter: profileFilter,
+    limits: { fileSize: 5 * 1024 * 1024}, // 5 MB,
+    storage: s3Storage,
+  }).single("profile") as unknown as RequestHandler),
+  updateAccount
 );
 
 export default userRouter;

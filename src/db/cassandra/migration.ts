@@ -1,6 +1,7 @@
 import { Client } from "cassandra-driver";
 import { cassandraClient } from "./connect.ts";
 import { Logger } from "../../utils/index.ts";
+import process from "node:process";
 
 export interface Migration {
   up(client: Client): Promise<void>;

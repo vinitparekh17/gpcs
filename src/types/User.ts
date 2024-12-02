@@ -7,8 +7,8 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
-  role: "USER" | "ADMIN" | null;
+  password?: string;
+  role: UserRole | null;
   profile: string | null;
   forgotpasstoken: string | null;
   forgotpassexpire: number | null;
@@ -22,11 +22,11 @@ export interface IUser extends User {
   getJWT(): string;
 }
 
-// declare module "express" {
-//   interface Request {
-//     user: IUser;
-//   }
-// }
+declare global {
+  namespace Express {
+    interface User extends IUser {}
+  }
+}
 
 export interface CustomPayload extends JwtPayload {
   data: {

@@ -1,12 +1,14 @@
-import express from "express";
+// @deno-types="npm:@types/express@^5.0"
+import express, { Request, Response } from "npm:express";
 import { rateLimit } from "express-rate-limit";
 import morgan, { StreamOptions } from "morgan";
-import cookieParser from "cookie-parser";
+
+// @deno-types="npm:@types/cookie-parser@1.4"
+import cookieParser from "npm:cookie-parser";
 import { Err, Logger } from "../utils/index.ts";
 
 import { corsConfig } from "./cors.middleware.ts";
 // import { ErrorHandler } from './err.middleware.ts';
-import type { Request, Response } from "express";
 import { app } from "../app.ts";
 import process from "node:process";
 
@@ -28,7 +30,7 @@ export const useMiddleware = function () {
       ),
     );
 
-    app.use(cookieParser());
+    app.use(cookieParser() as unknown as express.RequestHandler);
 
     app.use(express.json());
 

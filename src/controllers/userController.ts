@@ -15,70 +15,47 @@ export const signUp = AsyncHandler(
       return Err.send(res, 400, "Please fill all the fields!");
     }
 
-    // Rest of the code...
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
 
-    const userParam = {
+    const userParam: UserType = {
       firstName,
       lastName,
       email,
       password: hash,
-      role: "user",
+      role: "USER",
       profile: "",
       forgotpasstoken: "",
-      forgotpassexpire: new Date(),
+      forgotpassexpire: 0,
       createdAt: new Date(),
     };
 
-    const newUser = new User(userParam);
+    const user = new User(userParam);
 
-     await newUser
-      .insert()
-      .then(async (user: UserType | Error) => {
-        if ((user as UserType).id) {
-          newUser.id = user.id;
+    const savedUser =  await user.insert();
+
+        if (!(savedUser instanceof Error)) {
+          user.id = savedUser.id;
           await EmailService.sendMail({
-            to: user.email,
+            to: savedUser.email,
             subject: "Signed Up Successfully | Omnisive",
             html: SignUpTemplate(
-              `${user.firstName} ${user.lastName}`,
+              `${savedUser.firstName} ${savedUser.lastName}`,
             ),
           });
 
-          return Cookie.send(res, req, newUser, 201);
+          return Cookie.send(res, req, user, 201);
         }
-      })
-      .catch((error: unknown) => {
-        if (error instanceof PostgresError && error.code === "23505") {
-          return Err.send(
-            res,
-            409,
-            "User with this email already exists! ",
-          );
-        } else if (error instanceof Error) {
-          return Err.send(
-            res,
-            500,
-            `Internal Server Error: ${error.message}`,
-          );
-        } else {
-          return Err.send(
-            res,
-            500,
-            "Internal Server Error: Something went wrong",
-          );
-        }
-      });
-  },
-);
+
+        return Err.send(res, 500, savedUser.message); 
+  })
 
 export const signIn = AsyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
     const { email, password } = req.body;
 
     const existUser = await User.getUserByEmail(email);
-    if (existUser) {
+    if (existUser && existUser.password) {
       const matchPass = await bcrypt.compare(
         password,
         existUser.password,
@@ -165,7 +142,7 @@ export const updateAccount = AsyncHandler(
           firstName,
           lastName,
           email,
-          profile: profile.location,
+          profile: profile.location
         },
         req.params.id,
       )
@@ -189,6 +166,10 @@ export const updateAccount = AsyncHandler(
         lastName,
         email,
         profile: profileURL,
+        role: null,
+        forgotpasstoken: null,
+        forgotpassexpire: null,
+        createdAt: undefined
       },
       req.params.id,
     )

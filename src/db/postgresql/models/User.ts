@@ -29,7 +29,7 @@ export class User implements IUser {
     this.lastName = user.lastName;
     this.profile = user.profile;
     this.email = user.email;
-    this.password = user.password;
+    this.password = user.password ?? '';
     this.role = user.role === "USER" || user.role === "ADMIN" ? user.role : "USER";
     this.forgotpasstoken = user.forgotpasstoken ?? '';
     this.forgotpassexpire = user.forgotpassexpire ?? 0;
@@ -160,7 +160,7 @@ export class User implements IUser {
       .then((user) => (user.length > 0 ? new User(user[0]) : null));
   }
 
-  static async updateById(user: UserType, id: string): Promise<UserType> {
+  static async updateById(user: Partial<UserType>, id: string): Promise<UserType> {
     try {
       return await db
         .update(accountTable)

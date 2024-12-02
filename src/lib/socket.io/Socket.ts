@@ -87,19 +87,22 @@ export class SocketServer {
 
   private async emitResponse(
     prompt: string, 
-    responseCallback: (response: string, isCompleted: boolean, err?: Error) => void
+    responseCallback: (response: string, isCompleted: boolean, err?: Error | null) => void
   ) {
     if (!this.toUser) return;
   
     try {
       await AiResponder(
         prompt,
-        async (response: string, isCompleted: boolean, err: Error) => {
+        async (response: string | null, isCompleted: boolean, err: Error | null) => {
           if (err) {
             Logger.error(err.message);
             return;
           }
   
+          if(!response) {
+            return this.safeEmit(SocketEvents.RESPONSE_TEXT_STREAM, { response: `Unable to respond to: ${prompt}`, isCompleted: true})
+          }
           await responseCallback(response, isCompleted, err);
         }
       );
@@ -164,7 +167,7 @@ export class SocketServer {
     return;
   }
 
-  this.safeEmit(SocketEvents.REQUEST_PROMPT_TEXT, { prompt});
+  this.safeEmit(SocketEvents.REQUEST_PROMPT_TEXT, { prompt });
 
   await this.processAiResponse(prompt);
 
@@ -180,7 +183,7 @@ export class SocketServer {
   private async processAiResponse(prompt: string): Promise<void> {
     await AiResponder(
       prompt,
-      async (response: string, isCompleted: boolean, err?: Error) => {
+      async (response: string | null, isCompleted: boolean, err?: Error | null) => {
         if (err) {
           Logger.error(err);
           return;
@@ -193,9 +196,15 @@ export class SocketServer {
             isCompleted,
           });
   
+          if(!response) {
+            return this.safeEmit(SocketEvents.RESPONSE_TEXT_STREAM, { response: `Unable to respond to: ${prompt}`, isCompleted: true})
+          }
           await this.generateAndEmitAudioStream(prompt, response);
         } else {
           // Streaming response handling
+          if(!response) {
+            return this.safeEmit(SocketEvents.RESPONSE_TEXT_STREAM, { response: `Unable to respond to: ${prompt}`, isCompleted: true})
+          }
           this.handleStreamingResponse(response, isCompleted);
         }
       }
