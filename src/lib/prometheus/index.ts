@@ -1,4 +1,4 @@
-import * as promClient from "prom-client";
+import * as promClient from 'prom-client';
 
 export const defaultMetrics = promClient.collectDefaultMetrics;
 

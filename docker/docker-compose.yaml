@@ -1,6 +1,6 @@
 services:
-  backend-server:
-    container_name: backend-server
+  deno-server:
+    container_name: deno-server
     build:
       context: ..
       dockerfile: docker/Dockerfile

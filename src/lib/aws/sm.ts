@@ -1,11 +1,11 @@
 import {
-  GetSecretValueCommand,
-  SecretsManagerClient,
-} from "@aws-sdk/client-secrets-manager";
-import process from "node:process";
+	GetSecretValueCommand,
+	SecretsManagerClient,
+} from '@aws-sdk/client-secrets-manager';
+import process from 'node:process';
 
 const client = new SecretsManagerClient({
-  region: process.env.AWS_REGION || "ap-south-1",
+	region: process.env.AWS_REGION || 'ap-south-1',
 });
 
 /**
@@ -15,11 +15,11 @@ const client = new SecretsManagerClient({
  * @throws Error
  */
 export const getSecret = async (secretName: string): Promise<string> => {
-  try {
-    const command = new GetSecretValueCommand({ SecretId: secretName });
-    const response = await client.send(command);
-    return response.SecretString || "";
-  } catch (error: unknown) {
-    throw new Error(`Error fetching secret: ${error}`);
-  }
+	try {
+		const command = new GetSecretValueCommand({ SecretId: secretName });
+		const response = await client.send(command);
+		return response.SecretString || '';
+	} catch (error: unknown) {
+		throw new Error(`Error fetching secret: ${error}`);
+	}
 };

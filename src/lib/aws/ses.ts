@@ -1,9 +1,9 @@
-import * as aws from "@aws-sdk/client-ses";
-import { createTransport } from "nodemailer";
-import { Logger } from "../../utils/index.ts";
-import {FROM_EMAIL} from "../../config/index.ts";
-import { EmailFormat } from "../../types/index.ts";
-import { awsConfig } from "./index.ts";
+import * as aws from '@aws-sdk/client-ses';
+import { createTransport } from 'nodemailer';
+import { Logger } from '../../utils/index.ts';
+import { FROM_EMAIL } from '../../config/index.ts';
+import { EmailFormat } from '../../types/index.ts';
+import { awsConfig } from './index.ts';
 
 const ses = new aws.SES(awsConfig);
 
@@ -17,28 +17,29 @@ const ses = new aws.SES(awsConfig);
  */
 
 export default class EmailService {
-  private static transporter = createTransport({
-    SES: { ses, aws },
-  });
+	private static transporter = createTransport({
+		SES: { ses, aws },
+	});
 
-  public static async sendMail(emailData: EmailFormat): Promise<boolean> {
-    try {
-      const email = await EmailService.transporter.sendMail(
-        {
-          from: FROM_EMAIL,
-          ...emailData,
-        });
+	public static async sendMail(emailData: EmailFormat): Promise<boolean> {
+		try {
+			const email = await EmailService.transporter.sendMail(
+				{
+					from: FROM_EMAIL,
+					...emailData,
+				},
+			);
 
-      Logger.info(`Email sent: ${email.messageId}`);
-      return true;
-    } catch (error) {
-      if (error instanceof Error) {
-      Logger.error(error.message);
-      return false;
-    } else {
-      Logger.error("Error sending email");
-      return false;
-    }
-    }
-  }
+			Logger.info(`Email sent: ${email.messageId}`);
+			return true;
+		} catch (error) {
+			if (error instanceof Error) {
+				Logger.error(error.message);
+				return false;
+			} else {
+				Logger.error('Error sending email');
+				return false;
+			}
+		}
+	}
 }

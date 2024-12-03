@@ -1,5 +1,5 @@
-import { PollyClient, SynthesizeSpeechCommand } from "@aws-sdk/client-polly";
-import { awsConfig } from "./index.ts";
+import { PollyClient, SynthesizeSpeechCommand } from '@aws-sdk/client-polly';
+import { awsConfig } from './index.ts';
 
 export const pollyClient = new PollyClient(awsConfig);
 
@@ -11,11 +11,11 @@ export const pollyClient = new PollyClient(awsConfig);
  */
 
 export const pollyCommand = (text: string) =>
-  new SynthesizeSpeechCommand({
-    Engine: "neural",
-    LanguageCode: "en-GB",
-    OutputFormat: "mp3",
-    SampleRate: "8000",
-    Text: text,
-    VoiceId: "Arthur",
-  });
+	new SynthesizeSpeechCommand({
+		Engine: 'neural',
+		LanguageCode: 'en-GB',
+		OutputFormat: 'mp3',
+		SampleRate: '8000',
+		Text: text,
+		VoiceId: 'Arthur',
+	});

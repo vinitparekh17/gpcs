@@ -1,16 +1,16 @@
 import {
-  DeleteObjectCommand,
-  DeleteObjectCommandInput,
-  HeadObjectCommand,
-  HeadObjectCommandInput,
-  S3Client,
-} from "@aws-sdk/client-s3";
-import { AWS_BUCKET_NAME } from "../../config/index.ts";
-import { awsConfig } from "./index.ts";
+	DeleteObjectCommand,
+	DeleteObjectCommandInput,
+	HeadObjectCommand,
+	HeadObjectCommandInput,
+	S3Client,
+} from '@aws-sdk/client-s3';
+import { AWS_BUCKET_NAME } from '../../config/index.ts';
+import { awsConfig } from './index.ts';
 
 export const s3Client = new S3Client({
-  ...awsConfig,
-  maxAttempts: 3,
+	...awsConfig,
+	maxAttempts: 3,
 });
 
 /**
@@ -21,24 +21,24 @@ export const s3Client = new S3Client({
  */
 
 export const deleteObjectIfExist = (filename: string) => {
-  const params: HeadObjectCommandInput = {
-    Bucket: AWS_BUCKET_NAME,
-    Key: filename,
-  };
+	const params: HeadObjectCommandInput = {
+		Bucket: AWS_BUCKET_NAME,
+		Key: filename,
+	};
 
-  const cmd: HeadObjectCommand = new HeadObjectCommand(params);
+	const cmd: HeadObjectCommand = new HeadObjectCommand(params);
 
-  s3Client.send(cmd, async (error) => {
-    if (error && error.code == "NotFound") {
-      return;
-    } else {
-      const params: DeleteObjectCommandInput = {
-        Bucket: AWS_BUCKET_NAME,
-        Key: filename,
-      };
+	s3Client.send(cmd, async (error) => {
+		if (error && error.code == 'NotFound') {
+			return;
+		} else {
+			const params: DeleteObjectCommandInput = {
+				Bucket: AWS_BUCKET_NAME,
+				Key: filename,
+			};
 
-      const cmd = new DeleteObjectCommand(params);
-      await s3Client.send(cmd);
-    }
-  });
+			const cmd = new DeleteObjectCommand(params);
+			await s3Client.send(cmd);
+		}
+	});
 };

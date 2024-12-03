@@ -1,60 +1,25 @@
-# Stage 1: Build
-FROM node:20-alpine AS builder
+# Description: Dockerfile for the Deno application
+FROM denoland/deno:2.1.2
 
 # Set the working directory
 WORKDIR /usr/src/app
 
+RUN chown -R deno:deno /usr/src/app
+
+# Use non-root user
+USER deno
+
 # Copy package.json and yarn.lock to install dependencies
-COPY package.json yarn.lock ./
-
-RUN yarn cache clean
-
-# Install dependencies
-RUN yarn install --frozen-lockfile
+COPY package.json deno.json deno.lock ./
 
 # Copy the rest of the application files
 COPY . .
 
-# Build the application
-RUN yarn build
+# Install dependencies
+RUN deno install --lock=deno.lock --frozen=true --allow-scripts=npm:protobufjs@7.4.0,npm:es5-ext@0.10.64
 
-# Stage 2: Production
-FROM node:20.13-bullseye-slim
+# Compile the main app so that it doesn't need to be compiled each startup/entry.
+RUN deno cache src/index.ts
 
-ENV NODE_ENV=development
-
-# Use a non-root user for security
-USER node
-
-# Set the working directory
-WORKDIR /usr/src/app
-
-# Copy only the necessary files from the builder stage
-COPY --chown=node:node package.json yarn.lock ./
-
-# Install only production dependencies
-RUN yarn install --production --frozen-lockfile
-
-# Copy the built application from the builder stage
-COPY --from=builder --chown=node:node /usr/src/app/dist ./dist
-
-# Switch to root to perform installations
-USER root
-
-# Set the environment to production
-ENV NODE_ENV=production
-
-# Install CA certificates, curl, download the certificate, and clean up
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates && \
-    curl https://certs.secureserver.net/repository/sf-class2-root.crt -o ./dist/cert && \
-    apt-get remove -y curl && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/*
-
-# Switch back to non-root user
-USER node
-
-EXPOSE 8080
-
-CMD ["node", "dist/src/index.js"]
+# Run the application
+CMD ["run", "--allow-read", "--allow-env", "--allow-net", "./src/index.ts"]

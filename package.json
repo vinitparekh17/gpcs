@@ -5,7 +5,7 @@
   "main": "./dist/app.js",
   "entry": "./src/index.ts",
   "scripts": {
-    "dev": "denon run --allow-read --allow-env --allow-net ./src/index.ts",
+    "dev": "deno run --allow-read --allow-env --allow-net ./src/index.ts",
     "start": "yarn build && ./gpcs",
     "build": "yarn clean && deno compile --output gpcs --allow-read --allow-env --allow-net ./src/index.ts",
     "clean": "rm -rf gpcs",
@@ -19,8 +19,8 @@
     "prepare": "husky"
   },
   "keywords": [
-    "openai",
-    "chatbot"
+    "gpcs",
+    "backend-api"
   ],
   "author": "Vinit Parekh",
   "license": "MIT",

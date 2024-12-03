@@ -105,16 +105,9 @@ yarn build && yarn start # For production
 
 # Run with Docker
 
-1. Build the Docker image
 
 ```bash
-docker build -t gpcs -f ./docker .
-```
-
-2. Run the Docker container
-
-```bash
-docker run -p 8080:8080 gpcs -d --name gpcs
+docker compose -f ./docker/docker-compose.yml up
 ```
 
 # Logging and Monitoring
